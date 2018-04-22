@@ -1,7 +1,6 @@
 package main
 import (
     "github.com/gorilla/websocket"
-    log "github.com/sirupsen/logrus"
 )
 
 // clientはチャットを行っている1人のユーザーを表す。

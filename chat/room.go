@@ -3,7 +3,6 @@ package main
 import (
     "net/http"
     "github.com/gorilla/websocket"
-    log "github.com/sirupsen/logrus"
 )
 
 

@@ -6,8 +6,9 @@ import (
 	"path/filepath"
 	"sync"
 	"flag"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
+
 
 type templateHandler struct {
 	once     sync.Once
@@ -17,19 +18,27 @@ type templateHandler struct {
 
 // HTTPリクエストを処理する。
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    t.once.Do(func() {
-        t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
-    })
-    log.Info("templateHandler.ServeHTTP: HTTP接続を開始します。")
-    if err := t.templ.Execute(w, r); err != nil {
-        log.Error("templateHandler.ServeHTTP: ", err)
-    }
+	t.once.Do(func() {
+		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
+	})
+	log.Info("templateHandler.ServeHTTP: HTTP接続を開始します。")
+	if err := t.templ.Execute(w, r); err != nil {
+		log.Error("templateHandler.ServeHTTP: ", err)
+	}
 }
+
+
+// Global variables
+var (
+	log = logrus.New()
+)
+
 
 func main() {
 	log.Info("main: 準備開始します。")
 	r := newRoom()
-    http.Handle("/", &templateHandler{filename: "chat.html"})
+    http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
+	http.Handle("/login", &templateHandler{filename: "login.html"})
 	http.Handle("/room", r)
 	log.Info("main: 準備完了しました。" )
 
