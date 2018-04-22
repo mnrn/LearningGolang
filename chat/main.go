@@ -1,21 +1,19 @@
 package main
 
 import (
-
-	"net/http"
 	"flag"
-	"github.com/sirupsen/logrus"
+	"fmt"
 	"github.com/gorilla/pat"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
+	"github.com/sirupsen/logrus"
+	"net/http"
 	"os"
-	"fmt"
 )
-
 
 // Global variables
 var (
-	log = logrus.New()
+	log  = logrus.New()
 	addr = flag.String("addr", ":8080", " アプリケーションのアドレス")
 )
 
@@ -29,7 +27,6 @@ func init() {
 	)
 }
 
-
 func main() {
 	log.Info("main: ルーティングを開始します。")
 
@@ -38,16 +35,16 @@ func main() {
 	router.Get("/auth/{provider}/callback", loginCallbackHandler)
 	router.Get("/logout", logoutHandler)
 
-    router.Add("GET", "/chat", MustAuth(&templateHandler{filename: "chat.html"}))
+	router.Add("GET", "/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	router.Add("GET", "/login", &templateHandler{filename: "login.html"})
 
 	r := newRoom()
-	router.Add("GET","/room", r)
+	router.Add("GET", "/room", r)
 
-	log.Info("main: ルーティングを終了しました。" )
+	log.Info("main: ルーティングを終了しました。")
 
 	// チャットルームを開始する。
-    go r.run()
+	go r.run()
 
 	// Webサーバーを開始する。
 	log.Info("Webサーバーを開始します。ポート: ", *addr)

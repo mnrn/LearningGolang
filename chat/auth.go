@@ -1,9 +1,8 @@
 package main
 
 import (
+	"github.com/markbates/goth/gothic"
 	"net/http"
-	"strings"
-	"fmt"
 )
 
 type authHandler struct {
@@ -31,26 +30,11 @@ func MustAuth(handler http.Handler) http.Handler {
 	return &authHandler{next: handler}
 }
 
-// サードパーティへのログイン処理を受け付けます。
-// パスの形式: /auth/{action}/{provider}
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-
-	log.Info("ログインをハンドルしました。")
-
-	segs := strings.Split(r.URL.Path, "/")
-	if len(segs) < 4 {
-		log.Fatal("不正なパスを読み込みました。: ", r.URL.Path)
-		return
-	}
-	action 		:= segs[2]
-	provider	:= segs[3]
-
-	switch action {
-	case "login":
-		log.Info("TODO: ログイン処理", provider)
-	default:
-		w.WriteHeader(http.StatusNotFound)  // 404を返します。
-		fmt.Fprintf(w, "アクション%sには未対応です。", action)
-		log.Warningf("アクション%sには未対応です。", action)
+	if _, err := gothic.CompleteUserAuth(w, r); err != nil {
+		// 承認ハンドラを呼び出します。
+		gothic.BeginAuthHandler(w, r)
+	} else {
+		log.Error("loginHandler: ", err)
 	}
 }
