@@ -5,7 +5,7 @@ import (
     "github.com/gorilla/websocket"
 )
 
-
+// Constant variables
 const (
     socketBufferSize = 1024
     messageBufferSize = 256
