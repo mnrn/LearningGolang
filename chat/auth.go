@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/markbates/goth/gothic"
 	"net/http"
+	"fmt"
 )
 
 type authHandler struct {
@@ -37,4 +38,17 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Error("loginHandler: ", err)
 	}
+}
+
+func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
+	user, err := gothic.CompleteUserAuth(w, r)
+	if err != nil {  // 
+		log.Warning(fmt.Fprintln(w, r))
+		return
+	}
+}
+
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Location", "/")
+	w.WriteHeader(http.StatusTemporaryRedirect)
 }
