@@ -42,8 +42,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := gothic.CompleteUserAuth(w, r)
-	if err != nil {  // 
-		log.Warning(fmt.Fprintln(w, r))
+	if err != nil {  // 何らかの理由でユーザー認証が完了しなかった。
+		log.Warning(fmt.Fprintln(w, err))
 		return
 	}
 }
