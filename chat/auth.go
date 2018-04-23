@@ -33,10 +33,10 @@ func MustAuth(handler http.Handler) http.Handler {
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if _, err := gothic.CompleteUserAuth(w, r); err != nil {
+		log.Error("loginHandler: ", err)
+	} else {
 		// 承認ハンドラを呼び出します。
 		gothic.BeginAuthHandler(w, r)
-	} else {
-		log.Error("loginHandler: ", err)
 	}
 }
 
