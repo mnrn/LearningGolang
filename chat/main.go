@@ -31,8 +31,8 @@ func main() {
 	log.Info("main: ルーティングを開始します。")
 
 	router := pat.New()
-	router.Get("/auth/{provider}", loginHandler)
 	router.Get("/auth/{provider}/callback", loginCallbackHandler)
+	router.Get("/auth/{provider}", loginHandler)
 	router.Get("/logout", logoutHandler)
 
 	router.Add("GET", "/chat", MustAuth(&templateHandler{filename: "chat.html"}))
