@@ -32,16 +32,16 @@ func MustAuth(handler http.Handler) http.Handler {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	if _, err := gothic.CompleteUserAuth(w, r); err != nil {
-		log.Error("loginHandler: ", err)
-	} else {
+	//if _, err := gothic.CompleteUserAuth(w, r); err != nil {
+		//log.Error("loginHandler: ", err)
+	//} else {
 		// 承認ハンドラを呼び出します。
 		gothic.BeginAuthHandler(w, r)
-	}
+	//}
 }
 
 func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
-	user, err := gothic.CompleteUserAuth(w, r)
+	_, err := gothic.CompleteUserAuth(w, r)
 	if err != nil {  // 何らかの理由でユーザー認証が完了しなかった。
 		log.Warning(fmt.Fprintln(w, err))
 		return
