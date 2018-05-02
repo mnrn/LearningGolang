@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gorilla/websocket"
 	"net/http"
+	"github.com/satori/go.uuid"
 )
 
 // Constant variables
@@ -39,21 +40,21 @@ func (r *room) run() {
 		select {
 		case client := <-r.join: // 参加
 			r.clients[client] = true
-			log.Infof("room.run: 参加される方がいます。client=%p", client)
+			log.Infof("room.run: 参加される方がいます。client=%s", client.u)
 		case client := <-r.leave: // 退室
 			delete(r.clients, client)
 			close(client.send)
-			log.Infof("room.run: 退出される方がいます。 client=%p", client)
+			log.Infof("room.run: 退出される方がいます。 client=%s", client.u)
 		case msg := <-r.forward: // すべてのクライアントにメッセージを転送
 			log.Info("room.run: メッセージを受信しました。: ", string(msg))
 			for client := range r.clients {
 				select {
 				case client.send <- msg: // メッセージを送信
-					log.Infof("room.run: --送信に成功。 client=%p", client)
+					log.Infof("room.run: --送信に成功。 client=%s", client.u)
 				default: // 送信に失敗
 					delete(r.clients, client)
 					close(client.send)
-					log.Warnf("room.run: --送信に失敗。 client=%p", client)
+					log.Warnf("room.run: --送信に失敗。 client=%s", client.u)
 				}
 			}
 		}
@@ -73,7 +74,12 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	log.Debug("room.ServeHTTP: HTTP接続しました!")
 
 	// クライアントを生成して現在のチャットルームのjoinチャネルに渡す。
-	client := &client{socket: socket, send: make(chan []byte, messageBufferSize), room: r}
+	client := &client{
+		socket: socket,
+		send: make(chan []byte, messageBufferSize),
+		room: r,
+		u: uuid.Must(uuid.NewV4()),
+	}
 	r.join <- client
 
 	// defer文で、クライアントの終了時に退室の処理を行うように指定する。(ユーザーがいなくなった際のクリーンアップ)

@@ -29,7 +29,6 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Error("templateHandler.ServeHTTP: ", err)
 	}
 
-
 	log.Debug("templateHandler.ServeHTTP: テンプレートの処理を行います。")
 	if err := t.templ.Execute(w, r); err != nil {
 		log.Error("templateHandler.ServeHTTP: ", err)
