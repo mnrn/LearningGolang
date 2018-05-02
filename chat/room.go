@@ -34,7 +34,7 @@ func (r *room) run() {
 
 	log.Info("room.run: チャットルームを開始します。")
 	for {
-		log.Info("room.run: ループ処理始端")
+		log.Debug("room.run: ループ処理始端")
 		// チャネルに送信された値に応じて処理を分岐させる。
 		select {
 		case client := <-r.join: // 参加
@@ -53,11 +53,11 @@ func (r *room) run() {
 				default: // 送信に失敗
 					delete(r.clients, client)
 					close(client.send)
-					log.Infof("room.run: --送信に失敗。 client=%p", client)
+					log.Warnf("room.run: --送信に失敗。 client=%p", client)
 				}
 			}
 		}
-		log.Info("room.run: ループ処理の終端")
+		log.Debug("room.run: ループ処理の終端")
 	}
 }
 
@@ -70,7 +70,7 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.Info("room.ServeHTTP: HTTP接続しました!")
+	log.Debug("room.ServeHTTP: HTTP接続しました!")
 
 	// クライアントを生成して現在のチャットルームのjoinチャネルに渡す。
 	client := &client{socket: socket, send: make(chan []byte, messageBufferSize), room: r}
