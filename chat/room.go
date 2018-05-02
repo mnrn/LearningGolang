@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gorilla/websocket"
-	"net/http"
 	"github.com/satori/go.uuid"
+	"net/http"
 )
 
 // Constant variables
@@ -76,9 +76,9 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// クライアントを生成して現在のチャットルームのjoinチャネルに渡す。
 	client := &client{
 		socket: socket,
-		send: make(chan []byte, messageBufferSize),
-		room: r,
-		u: uuid.Must(uuid.NewV4()),
+		send:   make(chan []byte, messageBufferSize),
+		room:   r,
+		u:      uuid.Must(uuid.NewV4()),
 	}
 	r.join <- client
 

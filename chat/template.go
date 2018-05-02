@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/stretchr/objx"
 	"net/http"
 	"path/filepath"
 	"sync"
 	"text/template"
-	"github.com/stretchr/objx"
 )
 
 type templateHandler struct {

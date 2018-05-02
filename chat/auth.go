@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/markbates/goth/gothic"
-	"net/http"
 	"fmt"
+	"github.com/markbates/goth/gothic"
 	"github.com/stretchr/objx"
+	"net/http"
 )
 
 type authHandler struct {
@@ -41,10 +41,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
-	log.Debug("loginCallbackHandler: ログインコールバック開始します。" )
+	log.Debug("loginCallbackHandler: ログインコールバック開始します。")
 
 	user, err := gothic.CompleteUserAuth(w, r)
-	if err != nil {  // 何らかの理由でユーザー認証が完了しなかった。
+	if err != nil { // 何らかの理由でユーザー認証が完了しなかった。
 		log.Warning(fmt.Fprintln(w, err))
 		return
 	}
@@ -53,9 +53,9 @@ func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		"name": user.Name,
 	}).MustBase64()
 	http.SetCookie(w, &http.Cookie{
-		Name: "auth",
+		Name:  "auth",
 		Value: authCookieValue,
-		Path: "/",
+		Path:  "/",
 	})
 
 	// チャット画面へ
