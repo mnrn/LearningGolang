@@ -64,7 +64,7 @@ func (r *room) run() {
 
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// HTTP接続をアップグレードする
-	upgrader := websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
+	upgrader := websocket.Upgrader{ ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize }
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
 		log.Error("room.ServeHTTP: ", err)
