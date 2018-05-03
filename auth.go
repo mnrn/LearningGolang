@@ -66,7 +66,17 @@ func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	log.Debug("logoutHandler: ログアウトハンドラが呼び出されました。")
+
+	http.SetCookie(w, &http.Cookie{
+		Name: "auth",
+		Value: "",
+		Path: "/",
+		MaxAge: -1,
+	})
+
 	gothic.Logout(w, r)
+
 	w.Header().Set("Location", "/")
 	w.WriteHeader(http.StatusTemporaryRedirect)
 }
