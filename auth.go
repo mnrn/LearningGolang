@@ -68,6 +68,7 @@ func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("logoutHandler: ログアウトハンドラが呼び出されました。")
 
+	// Delete cookie
 	http.SetCookie(w, &http.Cookie{
 		Name: "auth",
 		Value: "",

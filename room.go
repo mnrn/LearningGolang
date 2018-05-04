@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
 	"net/http"
+	"github.com/stretchr/objx"
 )
 
 // Constant variables
@@ -14,7 +15,7 @@ const (
 
 // チャットルーム構造体
 type room struct {
-	forward chan []byte      // 他のクライアントに転送するためのメッセージを保持するチャネル。
+	forward chan *message    // 他のクライアントに転送するためのメッセージを保持するチャネル。
 	join    chan *client     // チャットルームに参加しようとしているクライアントのためのチャネル。
 	leave   chan *client     // チャットルームから退室しようとしているクライアントのためのチャネル。
 	clients map[*client]bool // 在室しているすべてのクライアントが保持される。
@@ -23,7 +24,7 @@ type room struct {
 // チャットルーム生成関数
 func newRoom() *room {
 	return &room{
-		forward: make(chan []byte),
+		forward: make(chan *message),
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
@@ -46,7 +47,7 @@ func (r *room) run() {
 			close(client.send)
 			log.Infof("room.run: 退出される方がいます。 client=%s", client.u)
 		case msg := <-r.forward: // すべてのクライアントにメッセージを転送
-			log.Info("room.run: メッセージを受信しました。: ", string(msg))
+			log.Info("room.run: メッセージを受信しました。: ", msg.Message)
 			for client := range r.clients {
 				select {
 				case client.send <- msg: // メッセージを送信
@@ -73,12 +74,19 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	log.Debug("room.ServeHTTP: HTTP接続しました!")
 
+
+	authCookie, err := req.Cookie("auth")
+	if err != nil {
+		log.Error("クッキーの取得に失敗しました。", err)
+		return
+	}
 	// クライアントを生成して現在のチャットルームのjoinチャネルに渡す。
 	client := &client{
-		socket: socket,
-		send:   make(chan []byte, messageBufferSize),
-		room:   r,
-		u:      uuid.Must(uuid.NewV4()),
+		socket: 	socket,
+		send:   	make(chan *message, messageBufferSize),
+		room:   	r,
+		u:      	uuid.Must(uuid.NewV4()),
+		userData:	objx.MustFromBase64(authCookie.Value),
 	}
 	r.join <- client
 
