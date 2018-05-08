@@ -70,9 +70,9 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Delete cookie
 	http.SetCookie(w, &http.Cookie{
-		Name: "auth",
-		Value: "",
-		Path: "/",
+		Name:   "auth",
+		Value:  "",
+		Path:   "/",
 		MaxAge: -1,
 	})
 

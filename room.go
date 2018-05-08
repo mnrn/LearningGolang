@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
-	"net/http"
 	"github.com/stretchr/objx"
+	"net/http"
 )
 
 // Constant variables
@@ -65,7 +65,7 @@ func (r *room) run() {
 
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// HTTP接続をアップグレードする
-	upgrader := websocket.Upgrader{ ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize }
+	upgrader := websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
 		log.Error("room.ServeHTTP: ", err)
@@ -74,7 +74,6 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	log.Debug("room.ServeHTTP: HTTP接続しました!")
 
-
 	authCookie, err := req.Cookie("auth")
 	if err != nil {
 		log.Error("クッキーの取得に失敗しました。", err)
@@ -82,11 +81,11 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	// クライアントを生成して現在のチャットルームのjoinチャネルに渡す。
 	client := &client{
-		socket: 	socket,
-		send:   	make(chan *message, messageBufferSize),
-		room:   	r,
-		u:      	uuid.Must(uuid.NewV4()),
-		userData:	objx.MustFromBase64(authCookie.Value),
+		socket:   socket,
+		send:     make(chan *message, messageBufferSize),
+		room:     r,
+		u:        uuid.Must(uuid.NewV4()),
+		userData: objx.MustFromBase64(authCookie.Value),
 	}
 	r.join <- client
 

@@ -8,11 +8,11 @@ import (
 
 // clientはチャットを行っている1人のユーザーを表す。
 type client struct {
-	socket 		*websocket.Conn 		// このクライアントのためのWebSocket
-	send   		chan *message     		// メッセージが送られるチャネル
-	room   		*room           		// このクライアントが参加しているチャットルーム
-	u      		uuid.UUID       		// UUID(version 4)
-	userData	map[string]interface{}	// ユーザー情報を保持
+	socket   *websocket.Conn        // このクライアントのためのWebSocket
+	send     chan *message          // メッセージが送られるチャネル
+	room     *room                  // このクライアントが参加しているチャットルーム
+	u        uuid.UUID              // UUID(version 4)
+	userData map[string]interface{} // ユーザー情報を保持
 }
 
 // クライアントがWebSocketからReadMessageを使ってデータを読み込むために使用する。
