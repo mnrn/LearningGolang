@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/markbates/goth/gothic"
 	"github.com/stretchr/objx"
-	"net/http"
 )
 
 type authHandler struct {
@@ -13,8 +14,8 @@ type authHandler struct {
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
-		// 未承認だった場合
+	if cookie, err := r.Cookie("auth"); err == http.ErrNoCookie || cookie.Value == "" {
+		// 未承認だったまたはクッキーが存在しなかった場合
 		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 		log.Info("authHandler.serveHTTP: 未認証です。")
@@ -50,8 +51,8 @@ func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	authCookieValue := objx.New(map[string]interface{}{
-		"name": user.Name,
-		"avatar_url": user.AvatarURL(),
+		"name":       user.Name,
+		"avatar_url": user.AvatarURL,
 	}).MustBase64()
 	http.SetCookie(w, &http.Cookie{
 		Name:  "auth",
@@ -74,7 +75,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		Name:   "auth",
 		Value:  "",
 		Path:   "/",
-		MaxAge: -1,
+		MaxAge: -1, // MaxAgeの値を-1とするとブラウザ上のクッキーは即座に削除される。
 	})
 
 	gothic.Logout(w, r)

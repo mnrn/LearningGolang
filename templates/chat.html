@@ -17,6 +17,7 @@ WebSocketを使ったチャットアプリケーション
 {{.UserData.name}}:<br/>
     <textarea></textarea>
     <input type="submit" value="送信" />
+    または<a href="/logout">サインアウト</a>
 </form>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
 </script>
@@ -51,6 +52,10 @@ WebSocketを使ったチャットアプリケーション
                 const msg = JSON.parse(e.data);
                 messages.append(
                     $("<li>").append(
+                        $("<img>").css({
+                            width: 50,
+                            verticalAlign: "middile"
+                        }).attr("src", msg.AvatarURL),
                         $("<strong>").text(msg.Name + ": "),
 							$("<span>").text(msg.Message)
 					)
