@@ -1,10 +1,11 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
 	"github.com/stretchr/objx"
-	"net/http"
 )
 
 // Constant variables
@@ -76,7 +77,7 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	authCookie, err := req.Cookie("auth")
 	if err != nil {
-		log.Error("クッキーの取得に失敗しました。", err)
+		log.Error("room.ServeHTTP: ", err)
 		return
 	}
 	// クライアントを生成して現在のチャットルームのjoinチャネルに渡す。
