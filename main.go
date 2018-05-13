@@ -51,6 +51,6 @@ func main() {
 	go r.run()
 
 	// Start the web server.
-	log.Info("Start the web server - Listen port address: ", *port)
+	log.Info("Start the web server - Listen port address ", *port)
 	log.Fatal(http.ListenAndServe(*port, router))
 }
