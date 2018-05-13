@@ -15,18 +15,18 @@ type authHandler struct {
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if cookie, err := r.Cookie("auth"); err == http.ErrNoCookie || cookie.Value == "" {
-		// 未承認だったまたはクッキーが存在しなかった場合
+		// If it was unauthentication or no cookie existed.
 		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusTemporaryRedirect)
-		log.Info("authHandler.serveHTTP: 未認証です。")
+		log.Info("authHandler.serveHTTP: Unauthenticated.")
 	} else if err != nil {
-		// 別の何らかのエラーが発生
+		// Other errors occurred.
 		log.Error(err)
 		panic(err.Error())
 	} else {
-		// 認証に成功した場合、ラップされたハンドラを呼び出す。
+		// If the authentication succeeds, call the wrapped handler.
 		h.next.ServeHTTP(w, r)
-		log.Info("認証に成功しました。")
+		log.Info("Authentication succeded.")
 	}
 }
 
@@ -35,17 +35,17 @@ func MustAuth(handler http.Handler) http.Handler {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	log.Debug("loginHandler: ログインハンドラが呼び出されました。")
+	log.Debug("loginHandler: login handler was invoked.")
 
-	// 承認ハンドラを呼び出します。
+	// Call the authentication handler.
 	gothic.BeginAuthHandler(w, r)
 }
 
 func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
-	log.Debug("loginCallbackHandler: ログインコールバック開始します。")
+	log.Debug("loginCallbackHandler: Start login handler")
 
 	user, err := gothic.CompleteUserAuth(w, r)
-	if err != nil { // 何らかの理由でユーザー認証が完了しなかった。
+	if err != nil { // // Call the authentication handler.
 		log.Warning(fmt.Fprintln(w, err))
 		return
 	}
@@ -60,22 +60,22 @@ func loginCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		Path:  "/",
 	})
 
-	// チャット画面へ
+	// Go to chat.
 	w.Header()["Location"] = []string{"/chat"}
 	w.WriteHeader(http.StatusTemporaryRedirect)
 
-	log.Debug("loginCallbackHandler: ログインコールバック終了します。")
+	log.Debug("loginCallbackHandler: End login handler.")
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	log.Debug("logoutHandler: ログアウトハンドラが呼び出されました。")
+	log.Debug("logoutHandler: logout handler was invoked.")
 
 	// Delete cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:   "auth",
 		Value:  "",
 		Path:   "/",
-		MaxAge: -1, // MaxAgeの値を-1とするとブラウザ上のクッキーは即座に削除される。
+		MaxAge: -1, // Setting MaxAge to -1, which indicates that it should be deleted immediately by the browser.
 	})
 
 	gothic.Logout(w, r)
