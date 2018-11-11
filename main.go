@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Global variables
+// Global Variables
 var (
 	log  = logrus.New()
 	port = flag.String("port", ":8080", "Application port address.")
@@ -34,6 +34,7 @@ func init() {
 func main() {
 	log.Debug("main: Start routing")
 
+	// Routing
 	router := pat.New()
 	router.Get("/auth/{provider}/callback", loginCallbackHandler)
 	router.Get("/auth/{provider}", loginHandler)
