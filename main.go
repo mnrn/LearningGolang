@@ -39,10 +39,8 @@ func main() {
 	router.Get("/auth/{provider}/callback", loginCallbackHandler)
 	router.Get("/auth/{provider}", loginHandler)
 	router.Get("/logout", logoutHandler)
-
 	router.Add("GET", "/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	router.Add("GET", "/login", &templateHandler{filename: "login.html"})
-
 	r := newRoom()
 	router.Add("GET", "/room", r)
 
