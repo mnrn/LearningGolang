@@ -20,7 +20,7 @@ type client struct {
 func (c *client) read() {
 	log.Debugf("client.read: 読み取り開始します。 client=%s", c.uuid)
 	for {
-		var msg *message = nil
+		var msg *message
 		if err := c.socket.ReadJSON(&msg); err != nil {
 			log.Error("client.read: ", err)
 			break // エラーが発生した場合、ループから脱出してWebSocketを閉じる。
