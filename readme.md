@@ -2,4 +2,4 @@
 
 Chat application written in Golang.
 
-[![status](https://img.shields.io/badge/status-unstable-green.svg)](https://img.shields.io/badge/status-unstable-green.svg)
+[![Build Status](https://travis-ci.org/mnrn/chat.svg?branch=master)](https://travis-ci.org/mnrn/chat)
