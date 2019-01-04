@@ -21,8 +21,8 @@
 
 <body>
 <div class="container">
-    <div class="panel panel-default">
-        <div class="panel-body">
+    <div class="card">
+        <div class="card-body">
             <ul id="messages"></ul>
         </div>
     </div>
@@ -36,48 +36,7 @@
     </form>
 </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script>
-    $(function(){
-        let socket   = null;
-        let msgbox   = $("#chatbox textarea");
-        let messages = $("#messages");
-        $("#chatbox").submit(function() {
-            if (!msgbox.val()) {
-                alert("メッセージを入力してください。");
-                return false;
-            }
-            if (!socket) {
-                alert("エラー: WebSocket接続が行われていません。");
-                return false;
-            }
-            socket.send(JSON.stringify({"Message": msgbox.val()}));
-            msgbox.val("");
-            return false;
-        });
-        if (!window["WebSocket"]) {
-            alert("エラー: WebSocketに対応していないブラウザです。" );
-        }
-        else {
-            socket = new WebSocket("ws://{{.Host}}/room");  // WebSocket接続を開始する。
-            // WebSocketがメッセージを受信するとjQueryを使って箇条書きの要素にメッセージが追加され、ブラウザ上表示されます。
-            socket.onclose = function() {
-                alert("接続が終了しました。");
-            }
-            socket.onmessage = function(e) {
-                const msg = JSON.parse(e.data);
-                messages.append(
-                    $("<li>").append(
-                        $("<img>").attr("title", msg.Name).css({
-                            width: 50,
-                            verticalAlign: "middile"
-                        }).attr("src", msg.AvatarURL),
-                        $("<span>").text(msg.Message)
-					)
-				);
-            }
-        }
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="/static/js/chat.js"></script>
 </body>
 </html>
