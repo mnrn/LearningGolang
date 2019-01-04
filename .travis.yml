@@ -4,3 +4,6 @@ go:
   - "1.11"
 script:
   go build
+notifications:
+  email:
+    on_success: false
