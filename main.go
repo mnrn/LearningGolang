@@ -30,9 +30,6 @@ func init() {
 	// Set the logging level on a logger.
 	log.SetLevel(logrus.DebugLevel)
 }
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Gorilla!\n"))
-}
 
 func main() {
 	log.Debug("main: Start routing")
