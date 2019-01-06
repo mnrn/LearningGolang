@@ -2,4 +2,4 @@
 
 Chat server written in Golang.
 
-[![Build Status](https://travis-ci.org/mnrn/chat.svg?branch=master)](https://travis-ci.org/mnrn/chat)
+[![Build Status](https://travis-ci.org/mnrn/chat-server.svg?branch=master)](https://travis-ci.org/mnrn/chat-server)
